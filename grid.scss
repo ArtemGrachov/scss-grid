@@ -1,0 +1,43 @@
+@mixin grid($columnsCount, $columnGap: 0, $breakpoints: (), $prefix: '', $colName: 'col', $rowName: 'row') {
+    .#{$prefix}#{$rowName} {
+        display: flex;
+        margin: 0 (-$columnGap);
+    }
+    
+    .#{$prefix}#{$colName} {
+        @include columns($columnsCount, $columnGap);
+    
+        @each $bKey, $bWidth in $breakpoints {
+            &-#{$bKey} {
+                @media (max-width: $bWidth) {
+                    @include columns($columnsCount, $columnGap);
+                }
+            }
+        }
+    }
+}
+
+@mixin column($col, $count, $gap) {
+    padding-left: $gap;
+    padding-right: $gap;
+    width: 100% / $count * $col;
+}
+  
+@mixin columns($count, $gap) {
+    @for $i from 1 through $count {
+        &-#{$i} {
+            @include column($i, $count, $gap);
+        }
+    }
+}
+
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+);
+
+@include grid(12, 20px, $breakpoints);
+
+@include grid(4, 5px, $breakpoints, 'zzzz-', 'column');
